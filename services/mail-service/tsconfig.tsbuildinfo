@@ -1,0 +1,1 @@
+{"root":["./src/app.ts","./src/server.ts","./src/config/mail.config.ts","./src/controllers/mail.controller.ts","./src/routes/mail.routes.ts","./src/services/mail.services.ts","./src/types/response.type.ts","./src/utils/apperror.ts"],"version":"6.0.3"}
