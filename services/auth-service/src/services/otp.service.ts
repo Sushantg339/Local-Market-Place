@@ -1,10 +1,11 @@
 import otp from "otp-generator"
+import axios from "axios"
+
 
 import User from "../models/user.model.js"
 import { AppError } from "../utils/appError.js"
 import Otp from "../models/otp.model.js"
-import axios from "axios"
-import { mailtemplate } from "../templates/mail.template.js"
+import { registerMailTemplate } from "../templates/mail.template.js"
 
 
 interface IUserData{
@@ -36,7 +37,7 @@ export const generateOtp = async(data: IUserData)=>{
     const mailData = {
         email: email,
         subject: "OTP Verification - Servora",
-        body: mailtemplate(newOtp),
+        body: registerMailTemplate(newOtp),
         from: "sushantg339@gmail.com"
     }
 

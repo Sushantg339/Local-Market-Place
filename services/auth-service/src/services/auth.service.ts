@@ -80,7 +80,7 @@ export const loginService = async(data: ILoginData)=>{
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if(!isPasswordValid){
-        throw new AppError(400, "Invalid Credentials")
+        throw new AppError(422, "Invalid Credentials")
     }
 
     const token = jwt.sign({
