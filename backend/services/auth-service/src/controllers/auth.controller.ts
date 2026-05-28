@@ -10,7 +10,7 @@ import { forgotPasswordOtpVerifyService, forgotPasswordService, resetPasswordSer
 import client from "../config/redis.config.js";
 
 
-export const sendEmailController: RequestHandler = async(req , res)=>{
+export const sendEmailController: RequestHandler = async(req , res, next)=>{
     try {
         const requiredBody = z.object({
             fullName: z.string(),
@@ -40,16 +40,11 @@ export const sendEmailController: RequestHandler = async(req , res)=>{
         } as ApiResponse<typeof mail>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const signupController: RequestHandler = async(req, res)=>{
+export const signupController: RequestHandler = async(req, res, next)=>{
     try {
         const requiredBody = z.object({
             fullName: z.string(),
@@ -87,16 +82,11 @@ export const signupController: RequestHandler = async(req, res)=>{
         } as ApiResponse<typeof data>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const loginController: RequestHandler = async(req, res)=>{
+export const loginController: RequestHandler = async(req, res, next)=>{
     try {
         const requiredBody = z.object({
             password: z.string().min(8),
@@ -152,7 +142,7 @@ export const loginController: RequestHandler = async(req, res)=>{
     }
 }
 
-export const forgotPasswordController: RequestHandler = async(req, res)=>{
+export const forgotPasswordController: RequestHandler = async(req, res, next)=>{
     try {
         const requiredBody = z.object({
             email: z.email()
@@ -177,16 +167,11 @@ export const forgotPasswordController: RequestHandler = async(req, res)=>{
         } as ApiResponse<typeof data>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const forgotPasswordOtpVerifyController: RequestHandler = async(req, res)=>{
+export const forgotPasswordOtpVerifyController: RequestHandler = async(req, res, next)=>{
     try {
         const requiredBody = z.object({
             email: z.email(),
@@ -211,16 +196,11 @@ export const forgotPasswordOtpVerifyController: RequestHandler = async(req, res)
             data: updatedUser
         } as ApiResponse<typeof updatedUser>)
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const resetPasswordController: RequestHandler = async(req, res)=>{
+export const resetPasswordController: RequestHandler = async(req, res, next)=>{
     try {
         const requiredBody = z.object({
             token: z.string(),
@@ -247,17 +227,12 @@ export const resetPasswordController: RequestHandler = async(req, res)=>{
         } as ApiResponse<typeof updatedUser>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
 
-export const updatePasswordController: RequestHandler = async(req , res)=>{
+export const updatePasswordController: RequestHandler = async(req , res, next)=>{
     try {
         const userData = JSON.parse(req.headers["user"] as string)
 
@@ -289,16 +264,11 @@ export const updatePasswordController: RequestHandler = async(req , res)=>{
         } as ApiResponse<typeof data>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const refreshTokenController: RequestHandler = async(req, res)=>{
+export const refreshTokenController: RequestHandler = async(req, res, next)=>{
     try {
         const {refreshToken} = req.cookies
 
@@ -324,16 +294,11 @@ export const refreshTokenController: RequestHandler = async(req, res)=>{
         } as ApiResponse<typeof tokens>)
 
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }
 
-export const logoutController: RequestHandler = async(req , res)=>{
+export const logoutController: RequestHandler = async(req , res, next)=>{
     try {
         const {refreshToken} = req.cookies
 
@@ -350,11 +315,6 @@ export const logoutController: RequestHandler = async(req , res)=>{
             data: null
         } as ApiResponse<null>)
     } catch (error: any) {
-        console.log(error.message)
-        return res.status(error.statusCode || 500).json({
-            success: false,
-            message : error.message || "Internal server error",
-            data: null
-        })
+        next(error)
     }
 }

@@ -10,6 +10,12 @@ const PORT = process.env.PORT || 5000
 const app = express()
 app.use(cookieParser())
 
+// Logger
+app.use((req, _res, next)=>{
+    console.log(`${req.method} ${req.url}`)
+    next()
+})
+
 
 app.use('/api/v1', mainRouter)
 

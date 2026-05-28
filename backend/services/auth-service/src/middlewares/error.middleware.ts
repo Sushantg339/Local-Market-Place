@@ -1,0 +1,9 @@
+import type { NextFunction, RequestHandler, Request, Response } from "express";
+
+export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)=>{
+    res.status(err.statusCode || 500).json({
+        success: false,
+        message : err.message || "Internal Server Error!",
+        data: null
+    })
+}

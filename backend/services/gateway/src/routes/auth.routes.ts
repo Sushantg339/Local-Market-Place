@@ -17,19 +17,19 @@ const authProxy = proxy("http://localhost:3001", {
         }
 
         return proxyReqOpt
+    },
+
+    proxyErrorHandler: (err, res, next)=>{
+        console.log("Proxy Error : ", {...err})
+        res.status(500).json({
+            success: false,
+            message: "Auth service unavailable"
+        })
     }
 })
 
-authRouter.use("/send-otp", authProxy)
-authRouter.use("/signup", authProxy)
-authRouter.use("/login", authProxy)
-authRouter.use("/forgot-password", authProxy)
-authRouter.use("/forgot-verify-otp", authProxy)
-authRouter.use("/send-otp", authProxy)
-authRouter.use("/reset-password", authProxy)
 authRouter.use("/update-password", authMiddleware, authProxy)
-authRouter.use("/refresh-token", authProxy)
-authRouter.use("/logout", authProxy)
+authRouter.use("/", authProxy)
 
 
 export default authRouter
