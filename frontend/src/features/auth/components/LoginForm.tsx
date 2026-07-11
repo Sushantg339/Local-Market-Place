@@ -2,36 +2,30 @@ import { Button, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { signupApiCall } from "../services/signup";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { FaEye } from "react-icons/fa6";
+import { loginApiCall } from "../services/login";
+import { useDispatch } from "react-redux";
+import { setToken } from "../authSlice";
 
-export interface ISignupFormData {
-  fullName: string;
+interface ILoginFormData {
   email: string;
   password: string;
-  role: "user" | "worker";
 }
 
-const SignupForm = () => {
-  const [formData, setFormData] = useState<ISignupFormData>({
-    fullName: "",
-    email: "",
-    password: "",
-    role: "user",
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [hidePassword, setHidePassword] = useState(true);
-
+const LoginForm = () => {
   const navigate = useNavigate();
 
-  const setRoleHandler = (role: ISignupFormData["role"]) => {
-    setFormData((prev) => ({
-      ...prev,
-      role,
-    }));
-  };
+  const [loading, setLoading] = useState(false);
+
+  const [hidePassword, setHidePassword] = useState(true);
+
+  const [formData, setFormData] = useState<ILoginFormData>({
+    email: "",
+    password: "",
+  });
+
+  const dispatch = useDispatch()
 
   const inputChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,26 +39,20 @@ const SignupForm = () => {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (formData.password.length < 8) {
-      toast.error("Password must be at least 8 characters.");
-      return;
-    }
-
     setLoading(true);
 
-    const toastId = toast.loading("Sending OTP...");
+    const toastId = toast.loading("Logging in...");
 
     try {
-      const res = await signupApiCall(formData);
+      const res = await loginApiCall(formData);
 
       toast.success(res.data.message);
 
+      dispatch(setToken(res.data.accessToken))
 
-      navigate("/verify-otp", {
-        state: formData,
-      });
+      navigate("/");
     } catch (error: any) {
-      toast.error(error.response.data.message || "Signup failed!");
+      toast.error(error.response.data.message || "Login failed.");
     } finally {
       toast.dismiss(toastId);
       setLoading(false);
@@ -73,20 +61,7 @@ const SignupForm = () => {
 
   return (
     <form onSubmit={submitHandler} className="space-y-5">
-      <TextField
-        fullWidth
-        label="Full Name"
-        name="fullName"
-        value={formData.fullName}
-        onChange={inputChangeHandler}
-        autoComplete="off"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "14px",
-          },
-          marginBottom: 2
-        }}
-      />
+      {/* Email */}
 
       <TextField
         fullWidth
@@ -104,6 +79,8 @@ const SignupForm = () => {
         }}
       />
 
+      {/* Password */}
+
       <TextField
         fullWidth
         label="Password"
@@ -118,9 +95,6 @@ const SignupForm = () => {
           },
           marginBottom: 2
         }}
-        // InputProps typing mismatch in this project's MUI types — cast to any
-        // to allow the endAdornment usage.
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         InputProps={{
           endAdornment: (
@@ -141,39 +115,18 @@ const SignupForm = () => {
         } as any}
       />
 
-      {/* Role Selector */}
+      {/* Forgot Password */}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-600 mb-2">
-          Select Role
-        </label>
-
-        <div className="flex rounded-xl bg-gray-100 p-1">
-          <button
-            type="button"
-            onClick={() => setRoleHandler("user")}
-            className={`flex-1 rounded-lg py-3 font-semibold transition-all cursor-pointer ${
-              formData.role === "user"
-                ? "bg-white shadow-md text-indigo-600"
-                : "text-gray-600"
-            }`}
-          >
-            User
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setRoleHandler("worker")}
-            className={`flex-1 rounded-lg py-3 font-semibold transition-all cursor-pointer ${
-              formData.role === "worker"
-                ? "bg-white shadow-md text-indigo-600"
-                : "text-gray-600"
-            }`}
-          >
-            Worker
-          </button>
-        </div>
+      <div className="flex justify-end">
+        <Link
+          to="/forgot-password"
+          className="text-sm text-indigo-600 hover:underline font-medium"
+        >
+          Forgot Password?
+        </Link>
       </div>
+
+      {/* Login Button */}
 
       <Button
         fullWidth
@@ -186,23 +139,25 @@ const SignupForm = () => {
           textTransform: "none",
           fontWeight: 700,
           fontSize: 16,
-          marginBottom: 2
+          marginBottom: 1
         }}
       >
-        {loading ? "Creating Account..." : "Create Account"}
+        {loading ? "Signing In..." : "Sign In"}
       </Button>
 
+      {/* Signup Link */}
+
       <p className="text-center text-gray-500">
-        Already have an account?
+        Don't have an account?
         <Link
-          to="/login"
+          to="/signup"
           className="ml-2 text-indigo-600 font-semibold hover:underline"
         >
-          Login
+          Sign Up
         </Link>
       </p>
     </form>
   );
 };
 
-export default SignupForm;
+export default LoginForm;
