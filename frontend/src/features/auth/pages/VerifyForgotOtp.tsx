@@ -3,12 +3,12 @@ import { Button } from "@mui/material";
 import OtpInput from "react-otp-input";
 import LogoAnimation from "../components/LogoAnimation";
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyOtpApiCall, signupApiCall } from "../services/signup";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setToken } from "../authSlice";
+import { forgotPasswordApiCall, verifyForgotOtpApiCall } from "../services/forgotPassword";
 
-const VerifyOtp = () => {
+const VerifyForgotOtp = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -55,7 +55,7 @@ const VerifyOtp = () => {
     const toastId = toast.loading("Verifying OTP...");
 
     try {
-      const res = await verifyOtpApiCall({
+      const res = await verifyForgotOtpApiCall({
         ...location.state,
         otp,
       });
@@ -63,7 +63,7 @@ const VerifyOtp = () => {
       toast.success(res.message);
       dispatch(setToken(res.data.accessToken))
 
-      navigate("/");
+      navigate("/reset-password", {state : {token: res.data.token}});
     } catch (error: any) {
       toast.error(error.response.data.message || "Verification failed.");
     } finally {
@@ -85,7 +85,7 @@ const VerifyOtp = () => {
     const toastId = toast.loading("Sending OTP...");
 
     try {
-      await signupApiCall(location.state);
+      await forgotPasswordApiCall(location.state);
 
       toast.success("OTP sent successfully!");
 
@@ -109,12 +109,12 @@ const VerifyOtp = () => {
           <div className="max-w-md mx-auto w-full">
             <div className="mb-10">
               <h1 className="text-4xl font-bold text-gray-900">
-                Verify Email
+                Enter the Otp.
               </h1>
 
               <p className="mt-3 text-gray-500 leading-relaxed">
                 We've sent a 4-digit verification code to your email - {location.state?.email}.
-                Enter it below to complete your registration.
+                Enter it below to change your password.
               </p>
             </div>
 
@@ -183,4 +183,4 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyForgotOtp;

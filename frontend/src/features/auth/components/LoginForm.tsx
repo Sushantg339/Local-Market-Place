@@ -46,7 +46,7 @@ const LoginForm = () => {
     try {
       const res = await loginApiCall(formData);
 
-      toast.success(res.data.message);
+      toast.success(res.message);
 
       dispatch(setToken(res.data.accessToken))
 

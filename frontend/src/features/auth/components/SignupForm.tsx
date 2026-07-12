@@ -57,7 +57,7 @@ const SignupForm = () => {
     try {
       const res = await signupApiCall(formData);
 
-      toast.success(res.data.message);
+      toast.success(res.message);
 
 
       navigate("/verify-otp", {

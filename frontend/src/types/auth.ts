@@ -17,3 +17,18 @@ export type loginPayload = {
     email: string,
     password: string
 }
+
+export type forgotPasswordPayload = {
+    email: string
+}
+
+export type verifyForgotOtpPayload = {
+    email: string,
+    otp: string
+}
+
+export type resetPasswordPayload = {
+    password: string,
+    confirmPassword: string,
+    token: string
+}
