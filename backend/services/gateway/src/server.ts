@@ -8,10 +8,18 @@ import helmet from "helmet"
 
 
 const PORT = process.env.PORT || 5000
+const FRONTEND_URL = process.env.FRONTEND_URL!
+
 
 const app = express()
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({
+    origin:[
+        "http://localhost:5173",
+        FRONTEND_URL
+    ],
+    credentials: true
+}))
 app.use(helmet())
 
 // Logger
