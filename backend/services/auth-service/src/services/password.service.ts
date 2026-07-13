@@ -31,6 +31,8 @@ interface IUpdatePasswordData{
     newPassword: string
 }
 
+const MAIL_SERVICE_URL = process.env.MAIL_SERVICE_URL
+
 export const forgotPasswordService = async(data: IForgotPasswordData)=>{
     const {email} = data
 
@@ -57,7 +59,7 @@ export const forgotPasswordService = async(data: IForgotPasswordData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post('http://localhost:3002/send-mail', mailData)
+    const mail = await axios.post(MAIL_SERVICE_URL || 'http://localhost:3002/send-mail', mailData)
 
     return mail.data
 }
@@ -150,7 +152,7 @@ export const updatePasswordService = async(data: IUpdatePasswordData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post('http://localhost:3002/send-mail', mailData)
+    const mail = await axios.post(MAIL_SERVICE_URL || 'http://localhost:3002/send-mail', mailData)
 
     return {
         _id: user._id,

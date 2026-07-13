@@ -6,7 +6,9 @@ import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const authRouter = express.Router()
 
-const authProxy = proxy("http://localhost:3001", {
+const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL
+
+const authProxy = proxy( AUTH_SERVICE_URL || "http://localhost:3001", {
     proxyReqPathResolver:(req)=>{
         return req.originalUrl.replace("/api/v1/auth", "")
     },

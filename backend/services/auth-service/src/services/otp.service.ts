@@ -12,6 +12,8 @@ interface IUserData{
     email: string,
 }
 
+const MAIL_SERVICE_URL = process.env.MAIL_SERVICE_URL
+
 export const generateOtp = async(data: IUserData)=>{
     const { email } = data
 
@@ -39,7 +41,7 @@ export const generateOtp = async(data: IUserData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post('http://localhost:3002/send-mail', mailData)
+    const mail = await axios.post(MAIL_SERVICE_URL ||'http://localhost:3002/send-mail', mailData)
 
     return mail.data
 }
