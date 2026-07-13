@@ -1,11 +1,11 @@
 import otp from "otp-generator"
-import axios from "axios"
 
 
 import User from "../models/user.model.js"
 import { AppError } from "../utils/appError.js"
 import { registerMailTemplate } from "../templates/mail.template.js"
 import client from "../config/redis.config.js"
+import { sendOtpMessage } from "../producers/otpProducer.js"
 
 
 interface IUserData{
@@ -41,7 +41,7 @@ export const generateOtp = async(data: IUserData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post(MAIL_SERVICE_URL ||'http://localhost:3002/send-mail', mailData)
+    const isSent = sendOtpMessage(mailData)
 
-    return mail.data
+    return isSent
 }

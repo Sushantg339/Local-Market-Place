@@ -1,5 +1,5 @@
 import transporter from "../config/mail.config.js";
-import type { IMailData } from "../controllers/mail.controller.js";
+import type { IMailData } from "../types/mail.types.js";
 
 export const sendMailService = async(data: IMailData)=>{
     const res = await transporter.sendMail({

@@ -1,13 +1,13 @@
 import crypto from "node:crypto"
 import bcrypt from "bcrypt"
 import otpGenerator from "otp-generator"
-import axios from "axios"
 
 
 import User from "../models/user.model.js"
 import { AppError } from "../utils/appError.js"
 import { forgotPasswordMailTemplate, updatePasswordTemplate } from "../templates/mail.template.js"
 import client from "../config/redis.config.js"
+import { sendOtpMessage } from "../producers/otpProducer.js"
 
 
 interface IForgotPasswordData{
@@ -31,7 +31,6 @@ interface IUpdatePasswordData{
     newPassword: string
 }
 
-const MAIL_SERVICE_URL = process.env.MAIL_SERVICE_URL
 
 export const forgotPasswordService = async(data: IForgotPasswordData)=>{
     const {email} = data
@@ -59,9 +58,9 @@ export const forgotPasswordService = async(data: IForgotPasswordData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post(MAIL_SERVICE_URL || 'http://localhost:3002/send-mail', mailData)
+    const isSent = sendOtpMessage(mailData)
 
-    return mail.data
+    return isSent
 }
 
 export const forgotPasswordOtpVerifyService = async(data: IForgotPasswordOtpVerifyData)=>{
@@ -152,7 +151,7 @@ export const updatePasswordService = async(data: IUpdatePasswordData)=>{
         from: "sushantg339@gmail.com"
     }
 
-    const mail = await axios.post(MAIL_SERVICE_URL || 'http://localhost:3002/send-mail', mailData)
+    const isSent = sendOtpMessage(mailData)
 
     return {
         _id: user._id,
